@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>FacultyFlow Teacher Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fc;
+            color: #191c1e;
+            min-height: 100vh;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e1e2e5;
+            border-radius: 10px;
+        }
+
+        .status-busy {
+            background-color: #ef4444 !important;
+        }
+
+        .satin-gradient {
+            background: linear-gradient(135deg, #3525cd 0%, #4f46e5 100%);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: "#3525cd", secondary: "#006c49", error: "#ba1a1a", "error-container": "#ffdad6" }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="antialiased overflow-hidden">
+
+    <header
+        class="fixed top-0 w-full h-16 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 flex justify-between items-center px-6">
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 text-lg font-bold text-indigo-600">
+                <span class="material-symbols-outlined text-primary">school</span>
+                <span
+                    class="bg-indigo-50 text-indigo-700 text-[10px] px-2 py-0.5 rounded-full tracking-wider font-extrabold uppercase">Teacher
+                    Portal</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="text-right">
+                <p id="teacher-name-display" class="text-sm font-bold text-slate-900">Loading...</p>
+                <button id="logout-btn"
+                    class="text-[11px] text-slate-500 hover:text-primary transition-colors">Logout</button>
+            </div>
+            <div
+                class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
+                T</div>
+        </div>
+    </header>
+
+    <main class="pt-16 pr-[300px] h-screen flex flex-col">
+        <section class="bg-indigo-50 px-8 py-3 flex items-center justify-between border-b border-indigo-100">
+            <div class="flex items-center gap-4">
+                <span class="text-xs font-bold text-indigo-900 tracking-wide uppercase">Your Current Status:</span>
+                <button id="status-btn"
+                    class="status-busy text-white px-4 py-1.5 rounded-lg text-sm font-semibold shadow-sm hover:opacity-90 transition-all flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Busy
+                </button>
+            </div>
+        </section>
+
+        <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50 p-8">
+
+            <div class="mb-10 max-w-5xl mx-auto">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="material-symbols-outlined text-secondary">handshake</span>
+                    <h3 class="text-xl font-bold text-slate-800">Upcoming Confirmed Meetings</h3>
+                </div>
+                <div id="confirmed-meetings-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    <p class="text-sm text-slate-500 italic">Loading meetings...</p>
+                </div>
+
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="material-symbols-outlined text-slate-400">history</span>
+                    <h3 class="text-lg font-bold text-slate-600">Past Meetings</h3>
+                </div>
+                <div id="past-meetings-list" class="space-y-3 opacity-75">
+                    <p class="text-sm text-slate-500 italic">No past meetings yet.</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 max-w-5xl mx-auto">
+                <div class="flex items-center gap-2 mb-6">
+                    <span class="material-symbols-outlined text-primary">event_available</span>
+                    <h3 class="text-lg font-bold text-slate-800">Add Open Slots for Students</h3>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-4 mb-8 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <div class="w-full md:w-1/3">
+                        <label
+                            class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Date</label>
+                        <input type="date" id="slot-date"
+                            class="w-full border-slate-200 rounded-lg px-3 py-2 text-sm cursor-pointer">
+                    </div>
+                    <div class="w-full md:w-1/3 flex gap-2">
+                        <div class="flex-1">
+                            <label
+                                class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Start
+                                Time</label>
+                            <input type="time" id="slot-start"
+                                class="w-full border-slate-200 rounded-lg px-3 py-2 text-sm cursor-pointer">
+                        </div>
+                        <div class="flex-1">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">End
+                                Time</label>
+                            <input type="time" id="slot-end"
+                                class="w-full border-slate-200 rounded-lg px-3 py-2 text-sm cursor-pointer">
+                        </div>
+                    </div>
+                    <div class="flex items-end md:w-1/3">
+                        <button id="add-slot-btn"
+                            class="bg-primary text-white px-6 py-2 rounded-lg text-sm font-bold hover:opacity-90 transition-all w-full">
+                            Create Free Slot
+                        </button>
+                    </div>
+                </div>
+
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Your Listed Free Slots
+                </h3>
+                <div id="teacher-slots-list" class="space-y-2 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <aside
+        class="fixed right-0 top-16 h-[calc(100vh-64px)] w-[300px] z-40 bg-white border-l border-slate-200 flex flex-col shadow-xl shadow-slate-200/50">
+        <div class="p-6 pb-2 border-b border-slate-100 mb-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-extrabold text-slate-900 tracking-tight">Pending Requests</h3>
+                <span id="request-count"
+                    class="bg-indigo-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+            </div>
+        </div>
+        <div id="requests-container" class="flex-1 overflow-y-auto px-4 pb-6 space-y-4 custom-scrollbar"></div>
+    </aside>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token || localStorage.getItem('role') !== 'teacher') return window.location.href = 'login.html';
+
+            document.getElementById('teacher-name-display').textContent = localStorage.getItem('userName') || "Professor";
+            document.getElementById('logout-btn').addEventListener('click', () => { localStorage.clear(); window.location.href = 'login.html'; });
+
+            // 1. FREE NOW TOGGLE
+            const statusBtn = document.getElementById('status-btn');
+            let isFreeNow = false;
+            try {
+                const meData = await (await fetch('http://localhost:5000/api/auth/me', { headers: { 'Authorization': `Bearer ${token}` } })).json();
+                isFreeNow = meData.freeNow || false;
+                updateStatusBtnUI();
+            } catch (e) { }
+
+            function updateStatusBtnUI() {
+                statusBtn.className = isFreeNow
+                    ? "bg-secondary text-white px-4 py-1.5 rounded-lg text-sm font-semibold shadow-sm hover:opacity-90 transition-all flex items-center gap-2"
+                    : "status-busy text-white px-4 py-1.5 rounded-lg text-sm font-semibold shadow-sm hover:opacity-90 transition-all flex items-center gap-2";
+                statusBtn.innerHTML = isFreeNow
+                    ? '<span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Free Now'
+                    : '<span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Busy';
+            }
+
+            statusBtn.addEventListener('click', async () => {
+                isFreeNow = !isFreeNow;
+                await fetch('http://localhost:5000/api/teacher/free-now', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ freeNow: isFreeNow, durationMinutes: 60 })
+                });
+                updateStatusBtnUI();
+            });
+
+            // TIME CHECKER HELPER: Checks if an appointment is in the past
+            function isMeetingInPast(dateStr, timeSlotStr) {
+                if (!dateStr || !timeSlotStr) return false;
+                try {
+                    // Extract the end time (e.g., from "10:00 AM - 11:30 AM" we get "11:30 AM")
+                    const endTimeStr = timeSlotStr.split('-')[1].trim();
+                    const meetingDate = new Date(`${dateStr} ${endTimeStr}`);
+                    return meetingDate < new Date(); // True if the meeting has passed
+                } catch (e) { return false; }
+            }
+
+            // 2. FETCH REQUESTS (Splits into Pending, Upcoming, and Past)
+            const pendingContainer = document.getElementById('requests-container');
+            const confirmedContainer = document.getElementById('confirmed-meetings-list');
+            const pastContainer = document.getElementById('past-meetings-list');
+            const requestCount = document.getElementById('request-count');
+
+            async function loadAppointments() {
+                try {
+                    const res = await fetch('http://localhost:5000/api/teacher/requests', { headers: { 'Authorization': `Bearer ${token}` } });
+                    const appointments = await res.json();
+
+                    const pending = appointments.filter(a => a.status === 'pending');
+                    const approved = appointments.filter(a => a.status === 'approved');
+
+                    // Sort approved into Upcoming and Past
+                    const upcoming = [];
+                    const past = [];
+                    approved.forEach(apt => {
+                        if (isMeetingInPast(apt.date, apt.timeSlot)) past.push(apt);
+                        else upcoming.push(apt);
+                    });
+
+                    // Render Pending in Sidebar
+                    requestCount.innerText = pending.length;
+                    if (pending.length === 0) {
+                        pendingContainer.innerHTML = '<p class="text-xs text-slate-400 text-center mt-10">All caught up!</p>';
+                    } else {
+                        pendingContainer.innerHTML = pending.map(req => `
+                <div class="bg-white border border-slate-200 rounded-[12px] p-4 shadow-sm hover:border-indigo-300 transition-colors">
+                    <p class="text-sm font-bold text-slate-900">${req.student?.fullName || 'Student'}</p>
+                    <p class="text-[11px] font-bold text-indigo-600 my-1">${req.date} | ${req.timeSlot}</p>
+                    <p class="text-[10px] text-slate-500 italic mb-3 bg-slate-50 p-2 rounded">"${req.reason}"</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="handleRequest('${req._id}', 'approved')" class="py-1.5 rounded-lg bg-secondary text-white text-[11px] font-bold shadow-sm">Approve</button>
+                        <button onclick="handleRequest('${req._id}', 'declined')" class="py-1.5 rounded-lg bg-error-container text-error text-[11px] font-bold">Decline</button>
+                    </div>
+                </div>`).join('');
+                    }
+
+                    // Render Upcoming Confirmed
+                    if (upcoming.length === 0) {
+                        confirmedContainer.innerHTML = '<p class="text-sm text-slate-400 col-span-full bg-white p-6 rounded-xl border border-slate-200">No upcoming meetings.</p>';
+                    } else {
+                        confirmedContainer.innerHTML = upcoming.map(req => {
+                            const initials = (req.student?.fullName || 'St').substring(0, 2).toUpperCase();
+                            return `
+                    <div class="p-4 bg-white border-l-4 border-l-secondary rounded-r-xl border-y border-r border-slate-200 flex justify-between items-center shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center font-bold text-emerald-700">${initials}</div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-900">${req.student?.fullName || 'Student'}</p>
+                                <p class="text-xs font-semibold text-slate-600">${req.date} <span class="text-secondary ml-1">${req.timeSlot}</span></p>
+                                <p class="text-[10px] text-slate-500 mt-1">Topic: ${req.reason}</p>
+                            </div>
+                        </div>
+                        <span class="bg-emerald-50 text-emerald-700 text-[10px] font-extrabold px-2 py-1 rounded border border-emerald-200">CONFIRMED</span>
+                    </div>`;
+                        }).join('');
+                    }
+
+                    // Render Past Meetings
+                    if (past.length === 0) {
+                        pastContainer.innerHTML = '<p class="text-sm text-slate-500 italic">No past meetings yet.</p>';
+                    } else {
+                        pastContainer.innerHTML = past.map(req => `
+                <div class="p-3 bg-slate-100 border border-slate-200 rounded-xl flex justify-between items-center grayscale">
+                    <div>
+                        <p class="text-sm font-bold text-slate-700">${req.student?.fullName || 'Student'}</p>
+                        <p class="text-xs text-slate-500">${req.date} | ${req.timeSlot}</p>
+                    </div>
+                    <span class="bg-slate-200 text-slate-500 text-[10px] font-extrabold px-2 py-1 rounded">COMPLETED</span>
+                </div>`).join('');
+                    }
+                } catch (error) { console.error(error); }
+            }
+
+            window.handleRequest = async (requestId, status) => {
+                await fetch(`http://localhost:5000/api/teacher/requests/${requestId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ status })
+                });
+                loadAppointments();
+            };
+
+            // 3. SLOT MANAGEMENT
+            const dateInput = document.getElementById('slot-date');
+            const startInput = document.getElementById('slot-start');
+            const endInput = document.getElementById('slot-end');
+            const slotsList = document.getElementById('teacher-slots-list');
+
+            dateInput.valueAsDate = new Date();
+            function formatTime(t) {
+                if (!t) return '';
+                let [h, m] = t.split(':'); h = parseInt(h);
+                const ampm = h >= 12 ? 'PM' : 'AM';
+                return `${h % 12 || 12}:${m} ${ampm}`;
+            }
+
+            async function loadTeacherSlots() {
+                try {
+                    const slots = await (await fetch('http://localhost:5000/api/teacher/calendar', { headers: { 'Authorization': `Bearer ${token}` } })).json();
+
+                    // Only show slots that haven't passed yet!
+                    const freeSlots = slots.filter(s => s.slotType === 'free' && !isMeetingInPast(s.date, s.timeSlot));
+
+                    slotsList.innerHTML = freeSlots.length === 0
+                        ? '<p class="text-sm text-slate-400 p-4 border border-dashed border-slate-300 rounded-lg text-center">No free slots currently open.</p>'
+                        : freeSlots.map(slot => `
+                <div class="p-3 bg-white border border-slate-200 rounded-xl flex justify-between items-center shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary text-xl">schedule</span>
+                        <div><p class="text-sm font-bold text-slate-800">${slot.date}</p><p class="text-[11px] font-semibold text-primary">${slot.timeSlot}</p></div>
+                    </div>
+                    <button onclick="deleteSlot('${slot._id}')" class="text-slate-400 hover:text-error hover:bg-error-container p-2 rounded-lg transition-all"><span class="material-symbols-outlined text-sm">delete</span></button>
+                </div>`).join('');
+                } catch (e) { }
+            }
+
+            document.getElementById('add-slot-btn').addEventListener('click', async (e) => {
+                if (!dateInput.value || !startInput.value || !endInput.value) return alert("Enter date, start time, and end time.");
+                const btn = e.currentTarget; btn.innerHTML = "Adding...";
+                const timeSlot = `${formatTime(startInput.value)} - ${formatTime(endInput.value)}`;
+                await fetch('http://localhost:5000/api/teacher/calendar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ date: dateInput.value, timeSlot, slotType: 'free' })
+                });
+                startInput.value = ''; endInput.value = ''; btn.innerHTML = "Create Free Slot";
+                loadTeacherSlots();
+            });
+
+            window.deleteSlot = async (id) => {
+                await fetch(`http://localhost:5000/api/teacher/calendar/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+                loadTeacherSlots();
+            };
+
+            // Init & Sync
+            loadTeacherSlots();
+            loadAppointments();
+            setInterval(loadAppointments, 5000);
+        });
+    </script>
+</body>
+
+</html>

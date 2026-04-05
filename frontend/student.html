@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Student Dashboard | FacultyFlow</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            theme: {
+                extend: { colors: { primary: "#3525cd", secondary: "#006c49", error: "#ba1a1a" } }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 overflow-hidden">
+
+    <header class="fixed top-0 w-full z-40 bg-white shadow-sm flex items-center justify-between px-6 h-16 w-full">
+        <div class="flex items-center gap-4">
+            <span class="material-symbols-outlined text-primary text-2xl">school</span>
+            <span class="text-lg font-bold text-indigo-600">FacultyFlow</span>
+            <span class="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Student
+                Portal</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <p id="student-name-display" class="text-xs font-bold text-slate-800">Loading...</p>
+            <button id="logout-btn"
+                class="text-xs font-semibold text-primary hover:text-indigo-800 transition-colors">Logout</button>
+        </div>
+    </header>
+
+    <div class="flex h-screen pt-16">
+        <aside
+            class="fixed left-0 top-0 h-full w-[280px] z-50 bg-white flex flex-col py-6 px-4 pt-20 border-r border-slate-200">
+            <div class="px-2 mb-4">
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Faculty Search</p>
+                <div class="relative">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                    <input
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20"
+                        placeholder="Search faculty..." type="text" />
+                </div>
+            </div>
+            <div id="faculty-list" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col gap-1 px-2 mt-2">
+                <p class="text-xs text-slate-500 text-center mt-10">Loading faculty...</p>
+            </div>
+        </aside>
+
+        <main class="flex-1 ml-[280px] p-8 overflow-y-auto">
+            <div class="max-w-4xl mx-auto space-y-12">
+
+                <div>
+                    <h3 class="font-bold text-xl mb-4 text-slate-800 border-b border-slate-200 pb-2">My Upcoming
+                        Appointments</h3>
+                    <div id="appointments-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <p class="text-sm text-slate-500">Loading appointments...</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-lg mb-4 text-slate-500">Past Appointments</h3>
+                    <div id="past-appointments-grid" class="grid grid-cols-1 gap-3 opacity-75">
+                        <p class="text-sm text-slate-500 italic">No past appointments.</p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <div id="booking-drawer"
+            class="fixed top-0 right-0 h-full w-[400px] bg-white shadow-2xl z-[60] transform translate-x-full transition-transform duration-300 flex flex-col border-l border-slate-200">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <div>
+                    <h3 id="drawer-teacher-name" class="font-bold text-lg text-slate-800">Teacher Name</h3>
+                    <p class="text-xs text-slate-500">Select a time slot to book an appointment.</p>
+                </div>
+                <button id="close-drawer-btn" class="p-2 hover:bg-slate-100 rounded-full text-slate-500">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <div>
+                    <p class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-4">Available Slots</p>
+                    <div id="drawer-slots-container" class="space-y-2">
+                        <p class="text-xs text-slate-500 italic">Loading slots...</p>
+                    </div>
+                    <p id="selected-slot-display"
+                        class="text-[11px] mt-4 text-center text-primary font-bold hidden bg-primary/5 py-2 rounded-lg border border-primary/20">
+                        Booking: <span id="slot-text"></span>
+                    </p>
+                </div>
+
+                <div>
+                    <label
+                        class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Reason</label>
+                    <textarea id="reason-input"
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary/20 resize-none"
+                        placeholder="Briefly describe what you want to discuss..." rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-slate-100 bg-slate-50">
+                <button id="send-request-btn"
+                    class="w-full py-3 bg-primary text-white font-bold rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2">
+                    Send Request <span class="material-symbols-outlined text-sm">send</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="success-toast"
+            class="fixed bottom-8 right-8 z-[100] bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 translate-y-20 opacity-0 transition-all duration-500">
+            <span class="material-symbols-outlined text-emerald-400">check_circle</span>
+            <p class="text-sm font-bold">Request sent successfully!</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token || localStorage.getItem('role') !== 'student') return window.location.href = 'login.html';
+
+            document.getElementById('student-name-display').textContent = localStorage.getItem('userName') || "Student";
+            document.getElementById('logout-btn').addEventListener('click', () => { localStorage.clear(); window.location.href = 'login.html'; });
+
+            let activeTeacherId = null;
+            let selectedDate = null;
+            let selectedTimeSlot = null;
+
+            const facultyList = document.getElementById('faculty-list');
+            const drawer = document.getElementById('booking-drawer');
+            const closeDrawerBtn = document.getElementById('close-drawer-btn');
+            const drawerSlotsContainer = document.getElementById('drawer-slots-container');
+            const slotDisplay = document.getElementById('selected-slot-display');
+            const slotText = document.getElementById('slot-text');
+            const reasonInput = document.getElementById('reason-input');
+            const sendBtn = document.getElementById('send-request-btn');
+            const toast = document.getElementById('success-toast');
+
+            closeDrawerBtn.addEventListener('click', () => { drawer.classList.add('translate-x-full'); });
+
+            // TIME CHECKER HELPER
+            function isMeetingInPast(dateStr, timeSlotStr) {
+                if (!dateStr || !timeSlotStr) return false;
+                try {
+                    const endTimeStr = timeSlotStr.split('-')[1].trim();
+                    const meetingDate = new Date(`${dateStr} ${endTimeStr}`);
+                    return meetingDate < new Date();
+                } catch (e) { return false; }
+            }
+
+            // 1. LOAD FACULTY 
+            async function syncFaculty() {
+                try {
+                    const res = await fetch('http://localhost:5000/api/student/faculty', { headers: { 'Authorization': `Bearer ${token}` } });
+                    const teachers = await res.json();
+
+                    let html = '<p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 px-2">Registered Faculty</p>';
+
+                    teachers.forEach(teacher => {
+                        const dotHtml = teacher.freeNow
+                            ? '<div class="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>'
+                            : '<div class="w-2 h-2 rounded-full bg-slate-300"></div>';
+                        const initials = teacher.fullName.substring(0, 2).toUpperCase();
+
+                        html += `
+                <div class="faculty-card group flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 cursor-pointer transition-all border border-transparent hover:border-slate-200" 
+                     data-id="${teacher._id}" data-name="${teacher.fullName}">
+                    <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-primary font-bold text-sm">${initials}</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold truncate text-slate-800">${teacher.fullName}</p>
+                    </div>
+                    <div>${dotHtml}</div>
+                </div>`;
+                    });
+
+                    facultyList.innerHTML = html;
+
+                    // Attach drawer openers
+                    document.querySelectorAll('.faculty-card').forEach(card => {
+                        card.addEventListener('click', async (e) => {
+                            activeTeacherId = e.currentTarget.dataset.id;
+                            document.getElementById('drawer-teacher-name').textContent = e.currentTarget.dataset.name;
+                            drawer.classList.remove('translate-x-full');
+
+                            drawerSlotsContainer.innerHTML = '<p class="text-xs text-slate-500 italic">Fetching slots...</p>';
+                            slotDisplay.classList.add('hidden');
+                            selectedDate = null;
+                            selectedTimeSlot = null;
+
+                            const slotRes = await fetch(`http://localhost:5000/api/student/faculty/${activeTeacherId}/calendar`, { headers: { 'Authorization': `Bearer ${token}` } });
+                            const slots = await slotRes.json();
+
+                            // Filter out slots that are already in the past!
+                            const freeSlots = slots.filter(s => s.slotType === 'free' && !isMeetingInPast(s.date, s.timeSlot));
+
+                            drawerSlotsContainer.innerHTML = '';
+                            if (freeSlots.length === 0) {
+                                drawerSlotsContainer.innerHTML = '<p class="text-xs text-error font-medium bg-error-container/30 p-2 rounded-lg">No slots available right now.</p>';
+                            } else {
+                                freeSlots.forEach(slot => {
+                                    const div = document.createElement('div');
+                                    div.className = 'p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-primary/5 text-sm font-bold text-slate-700 transition-all flex justify-between';
+                                    div.innerHTML = `<span>${slot.date}</span> <span class="text-primary">${slot.timeSlot}</span>`;
+                                    div.onclick = () => {
+                                        drawerSlotsContainer.querySelectorAll('div').forEach(d => { d.classList.remove('bg-primary/10', 'border-primary'); });
+                                        div.classList.add('bg-primary/10', 'border-primary');
+                                        selectedDate = slot.date;
+                                        selectedTimeSlot = slot.timeSlot;
+                                        slotDisplay.classList.remove('hidden');
+                                        slotText.textContent = `${slot.date} at ${slot.timeSlot}`;
+                                    };
+                                    drawerSlotsContainer.appendChild(div);
+                                });
+                            }
+                        });
+                    });
+                } catch (error) { console.error(error); }
+            }
+
+            // 2. LOAD MY APPOINTMENTS
+            const apptsGrid = document.getElementById('appointments-grid');
+            const pastApptsGrid = document.getElementById('past-appointments-grid');
+
+            async function loadMyAppointments() {
+                try {
+                    const res = await fetch('http://localhost:5000/api/student/appointments', { headers: { 'Authorization': `Bearer ${token}` } });
+                    const appointments = await res.json();
+
+                    const upcoming = [];
+                    const past = [];
+
+                    appointments.forEach(apt => {
+                        if (isMeetingInPast(apt.date, apt.timeSlot)) past.push(apt);
+                        else upcoming.push(apt);
+                    });
+
+                    // Render Upcoming
+                    if (upcoming.length === 0) {
+                        apptsGrid.innerHTML = '<p class="text-sm text-slate-500 col-span-full bg-white p-6 rounded-xl border border-slate-200">You have no upcoming appointments.</p>';
+                    } else {
+                        apptsGrid.innerHTML = upcoming.map(apt => {
+                            let statusColor = 'text-amber-700 bg-amber-50 border-amber-200';
+                            if (apt.status === 'approved') statusColor = 'text-emerald-700 bg-emerald-50 border-emerald-200';
+                            if (apt.status === 'declined') statusColor = 'text-rose-700 bg-rose-50 border-rose-200';
+
+                            const tName = apt.teacher ? apt.teacher.fullName : 'Teacher';
+                            return `
+                    <div class="p-4 border rounded-xl ${statusColor} flex justify-between items-center shadow-sm">
+                        <div>
+                            <p class="font-bold text-sm">${apt.reason}</p>
+                            <p class="text-xs opacity-80 mt-1">${tName} | ${apt.date} at ${apt.timeSlot}</p>
+                        </div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-widest px-2 py-1 bg-white/50 rounded-md">${apt.status}</span>
+                    </div>`;
+                        }).join('');
+                    }
+
+                    // Render Past
+                    if (past.length === 0) {
+                        pastApptsGrid.innerHTML = '<p class="text-sm text-slate-500 italic">No past appointments.</p>';
+                    } else {
+                        pastApptsGrid.innerHTML = past.map(apt => {
+                            const tName = apt.teacher ? apt.teacher.fullName : 'Teacher';
+                            return `
+                    <div class="p-4 bg-white border border-slate-200 rounded-xl flex justify-between items-center grayscale">
+                        <div>
+                            <p class="font-bold text-sm text-slate-700">${apt.reason}</p>
+                            <p class="text-xs text-slate-500 mt-1">${tName} | ${apt.date}</p>
+                        </div>
+                        <span class="text-[10px] text-slate-500 font-extrabold uppercase tracking-widest px-2 py-1 bg-slate-100 rounded-md">COMPLETED</span>
+                    </div>`;
+                        }).join('');
+                    }
+
+                } catch (e) { console.error(e); }
+            }
+
+            // 3. SEND REQUEST
+            sendBtn.addEventListener('click', async () => {
+                if (!selectedDate || !selectedTimeSlot) return alert("Please select a time slot first!");
+                const reason = reasonInput.value || "General Meeting";
+
+                const originalContent = sendBtn.innerHTML;
+                sendBtn.innerHTML = 'Sending...';
+                sendBtn.disabled = true;
+
+                try {
+                    const res = await fetch('http://localhost:5000/api/student/appointments', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                        body: JSON.stringify({ teacherId: activeTeacherId, date: selectedDate, timeSlot: selectedTimeSlot, reason: reason })
+                    });
+
+                    if (res.ok) {
+                        drawer.classList.add('translate-x-full');
+                        reasonInput.value = '';
+                        toast.classList.remove('translate-y-20', 'opacity-0');
+                        setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+                        loadMyAppointments();
+                    } else {
+                        const data = await res.json();
+                        alert(data.message);
+                    }
+                } catch (e) { alert("Error connecting to server."); }
+
+                sendBtn.innerHTML = originalContent;
+                sendBtn.disabled = false;
+            });
+
+            // Run Data Syncs
+            syncFaculty();
+            loadMyAppointments();
+            setInterval(syncFaculty, 3000);
+            setInterval(loadMyAppointments, 5000);
+        });
+    </script>
+</body>
+
+</html>

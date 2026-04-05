@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>FacultyFlow | Scholarly Access</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary-container": "#4f46e5",
+            "outline": "#777587",
+            "background": "#f8f9fc",
+            "primary": "#3525cd",
+            "surface": "#f8f9fc",
+            "on-surface-variant": "#464555",
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .ambient-shadow {
+      box-shadow: 0 12px 32px rgba(53, 37, 205, 0.04);
+    }
+
+    .satin-gradient {
+      background: linear-gradient(135deg, #3525cd 0%, #4f46e5 100%);
+    }
+  </style>
+</head>
+
+<body class="bg-surface text-slate-900 min-h-screen flex flex-col">
+  <main class="flex-grow flex items-center justify-center p-6 sm:p-12 z-10">
+    <div class="w-full max-w-[480px] space-y-8">
+      <div class="flex flex-col items-center justify-center gap-3">
+        <div class="w-14 h-14 bg-indigo-100 flex items-center justify-center rounded-xl">
+          <span class="material-symbols-outlined text-indigo-600 text-4xl">school</span>
+        </div>
+        <h1 class="text-indigo-600 font-bold text-3xl tracking-tight">FacultyFlow</h1>
+      </div>
+
+      <div class="bg-white rounded-xl p-8 ambient-shadow space-y-8 border border-slate-100">
+        <nav class="flex justify-center border-b border-slate-200">
+          <div class="flex gap-8">
+            <button class="pb-3 text-sm font-semibold text-primary border-b-2 border-primary transition-all"
+              id="tab-login">Login</button>
+            <button class="pb-3 text-sm font-medium text-slate-500 hover:text-slate-800 transition-all"
+              id="tab-signup">Sign Up</button>
+          </div>
+        </nav>
+
+        <div class="space-y-6">
+          <div class="space-y-3">
+            <label class="text-[11px] uppercase tracking-[0.05em] font-medium text-slate-500 block px-1">Role</label>
+            <div class="flex gap-4">
+              <button
+                class="flex-1 flex flex-col items-center gap-2 p-4 rounded-lg bg-indigo-50 border-2 border-indigo-600 text-indigo-600 transition-all"
+                id="role-student">
+                <span class="text-2xl">🎓</span>
+                <span class="text-xs font-bold uppercase tracking-wider">Student</span>
+              </button>
+              <button
+                class="flex-1 flex flex-col items-center gap-2 p-4 rounded-lg bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 transition-all"
+                id="role-teacher">
+                <span class="text-2xl">👨‍🏫</span>
+                <span class="text-xs font-bold uppercase tracking-wider">Teacher</span>
+              </button>
+            </div>
+          </div>
+
+          <form class="space-y-5">
+            <div class="space-y-1.5" id="name-container" style="display: none;">
+              <label class="text-[11px] uppercase tracking-[0.05em] font-medium text-slate-500 px-1">Full Name</label>
+              <div class="relative">
+                <span
+                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">person</span>
+                <input
+                  class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                  id="fullname" placeholder="John Doe" type="text" />
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-[11px] uppercase tracking-[0.05em] font-medium text-slate-500 px-1">Email</label>
+              <div class="relative">
+                <span
+                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">mail</span>
+                <input
+                  class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                  id="email" placeholder="name@university.edu" type="email" />
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-[11px] uppercase tracking-[0.05em] font-medium text-slate-500 px-1">Password</label>
+              <div class="relative">
+                <span
+                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">lock</span>
+                <input
+                  class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                  id="password" placeholder="••••••••" type="password" />
+              </div>
+            </div>
+
+            <button
+              class="w-full satin-gradient text-white font-semibold py-3.5 rounded-lg shadow-md hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              id="btn-submit" type="submit">
+              <span>Access Workspace</span>
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let isLogin = true;
+      let selectedRole = 'student';
+
+      const tabLogin = document.getElementById('tab-login');
+      const tabSignup = document.getElementById('tab-signup');
+      const submitBtn = document.getElementById('btn-submit');
+      const submitText = submitBtn.querySelector('span:first-child');
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      const nameInput = document.getElementById('fullname');
+      const nameContainer = document.getElementById('name-container');
+      const roleStudent = document.getElementById('role-student');
+      const roleTeacher = document.getElementById('role-teacher');
+      const authForm = document.querySelector('form');
+
+      const setActiveTab = (active, inactive) => {
+        active.classList.add('text-primary', 'border-b-2', 'border-primary', 'font-semibold');
+        active.classList.remove('text-slate-500', 'font-medium');
+        inactive.classList.remove('text-primary', 'border-b-2', 'border-primary', 'font-semibold');
+        inactive.classList.add('text-slate-500', 'font-medium');
+      };
+
+      tabLogin.addEventListener('click', () => {
+        isLogin = true;
+        setActiveTab(tabLogin, tabSignup);
+        submitText.textContent = 'Access Workspace';
+        nameContainer.style.display = 'none';
+      });
+
+      tabSignup.addEventListener('click', () => {
+        isLogin = false;
+        setActiveTab(tabSignup, tabLogin);
+        submitText.textContent = 'Create Account';
+        nameContainer.style.display = 'block';
+      });
+
+      const selectRole = (selected, unselected, roleValue) => {
+        selectedRole = roleValue;
+        selected.classList.add('bg-indigo-50', 'border-indigo-600', 'text-indigo-600');
+        selected.classList.remove('bg-white', 'border-slate-200', 'text-slate-500');
+        selected.style.borderWidth = '2px';
+
+        unselected.classList.remove('bg-indigo-50', 'border-indigo-600', 'text-indigo-600');
+        unselected.classList.add('bg-white', 'border-slate-200', 'text-slate-500');
+        unselected.style.borderWidth = '1px';
+      };
+
+      roleStudent.addEventListener('click', () => selectRole(roleStudent, roleTeacher, 'student'));
+      roleTeacher.addEventListener('click', () => selectRole(roleTeacher, roleStudent, 'teacher'));
+
+      authForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        const fullName = nameInput ? nameInput.value : '';
+
+        if (!email || !password) return alert("Please enter both email and password.");
+        if (!isLogin && !fullName) return alert("Please enter your full name.");
+
+        const originalContent = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="animate-spin material-symbols-outlined text-sm">progress_activity</span><span>Processing...</span>';
+
+        try {
+          const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+          const payload = isLogin ? { email, password } : {
+            email, password, role: selectedRole, fullName: fullName,
+            universityId: "ID-" + Math.floor(Math.random() * 10000),
+            department: "General"
+          };
+
+          const response = await fetch(`http://localhost:5000${endpoint}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('role', data.role);
+            localStorage.setItem('userId', data._id);
+            localStorage.setItem('userName', data.fullName);
+
+            window.location.href = data.role === 'teacher' ? 'teacher.html' : 'student.html';
+          } else {
+            alert("Error: " + data.message);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalContent;
+          }
+        } catch (error) {
+          alert("Could not connect to the server.");
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalContent;
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
